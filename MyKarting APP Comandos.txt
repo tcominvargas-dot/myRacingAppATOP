@@ -1,0 +1,63 @@
+API Keys
+37d9f9f6-1c25-42ff-b526-982be15346c5
+518779b4-025b-45f4-9b82-f39d07c9aabd
+
+
+MySQL:
+
+sudo systemctl start mysql
+sudo systemctl restart mysql
+sudo systemctl status mysql
+
+mysql -u admin -p
+(senha filomena)
+
+Start Cron Job:
+
+crontab -e
+1min
+* * * * * /usr/bin/python3 /home/ubuntu/mykartapp/my_karting_app5.py 2>&1
+5min
+*/5 * * * * /usr/bin/python3 /home/ubuntu/mykartapp/my_karting_app5.py 2>&1
+
+Parar:
+crontab -r
+
+Listar:
+crontab -l
+
+Verificar Log:
+
+grep CRON /var/log/syslog
+sudo systemctl status cron
+
+
+mysql -u admin -p -h localhost
+
+CREATE USER 'admin'@'%' IDENTIFIED BY 'filomena';
+GRANT ALL PRIVILEGES ON *.* TO 'admin'@'%' WITH GRANT OPTION;
+
+
+
+
+Config
+crontab -e
+
+* * * * * /usr/bin/python3 /home/ubuntu/mykartapp/race_monitor_scheduler.py
+* * * * * sleep 10; /usr/bin/python3 /home/ubuntu/mykartapp/race_monitor_scheduler.py
+* * * * * sleep 20; /usr/bin/python3 /home/ubuntu/mykartapp/race_monitor_scheduler.py
+* * * * * sleep 30; /usr/bin/python3 /home/ubuntu/mykartapp/race_monitor_scheduler.py
+* * * * * sleep 40; /usr/bin/python3 /home/ubuntu/mykartapp/race_monitor_scheduler.py
+* * * * * sleep 50; /usr/bin/python3 /home/ubuntu/mykartapp/race_monitor_scheduler.py
+
+* * * * * /bin/bash -c 'for i in {1..12}; do /usr/bin/python3 /home/ubuntu/mykartapp/race_monitor_scheduler.py; sleep 5; done'
+
+* * * * * /bin/bash -c 'for i in {1..6}; do /usr/bin/python3 /home/ubuntu/mykartapp/race_monitor_scheduler.py; sleep 10; done'
+
+Start
+crontab -l
+
+End
+crontab -r
+
+Race Teste: 37820

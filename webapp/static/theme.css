@@ -1,0 +1,11 @@
+
+:root{
+  --color-fast: #6f42c1; --color-fast-text: #fff;
+  --color-good: #198754; --color-good-text: #fff;
+  --color-warn: #ffc107; --color-warn-text: #212529;
+  --color-slow: #dc3545; --color-slow-text: #fff;
+}
+.cell-fast{background-color:var(--color-fast) !important;color:var(--color-fast-text) !important}
+.cell-good{background-color:var(--color-good) !important;color:var(--color-good-text) !important}
+.cell-warn{background-color:var(--color-warn) !important;color:var(--color-warn-text) !important}
+.cell-slow{background-color:var(--color-slow) !important;color:var(--color-slow-text) !important}

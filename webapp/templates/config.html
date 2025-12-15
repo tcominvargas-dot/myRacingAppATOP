@@ -1,0 +1,86 @@
+
+{% extends 'base.html' %}
+{% block content %}
+  <div class="row g-3">
+    <div class="col-lg-6">
+      <div class="card mb-3">
+        <div class="card-header">Scheduler (cron)</div>
+        <div class="card-body">
+          <p>Status: {{ 'Rodando' if scheduler_status.running else 'Parado' }}</p>
+          <ul class="small text-muted">
+            <li>Intervalo (s): {{ scheduler_status.interval_seconds or '–' }}</li>
+            <li>Início: {{ scheduler_status.start_time or '–' }}</li>
+            <li>Última execução: {{ scheduler_status.last_run or '–' }}</li>
+            <li>Total execuções: {{ scheduler_status.run_count }}</li>
+            <li>Último retorno: {{ scheduler_status.last_returncode if scheduler_status.last_returncode is not none else '–' }}</li>
+          </ul>
+          <form method="post" action="{{ url_for('scheduler_start') }}" class="row row-cols-lg-auto g-2">
+            <div class="col"><input type="number" name="interval_seconds" class="form-control" placeholder="Intervalo em segundos" required></div>
+            <div class="col"><button class="btn btn-success" type="submit">Iniciar / Atualizar</button></div>
+          </form>
+          <form method="post" action="{{ url_for('scheduler_stop') }}" class="mt-2">
+            <button class="btn btn-danger" type="submit">Parar</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="card mb-3">
+        <div class="card-header">Ações rápidas</div>
+        <div class="card-body">
+          <h6>cleanup_tables.py</h6>
+          <form method="post" action="{{ url_for('action_cleanup') }}" class="row g-2">
+            <div class="col-md-3">
+              <select name="method" class="form-select">
+                <option value="truncate">TRUNCATE</option>
+                <option value="delete">DELETE</option>
+              </select>
+            </div>
+            <div class="col-md-3 form-check">
+              <input class="form-check-input" type="checkbox" name="only_competitors" id="only_comp">
+              <label class="form-check-label" for="only_comp">Apenas competitors</label>
+            </div>
+            <div class="col-md-3 form-check">
+              <input class="form-check-input" type="checkbox" name="only_laps" id="only_laps">
+              <label class="form-check-label" for="only_laps">Apenas competitor_laps</label>
+            </div>
+            <div class="col-md-3 form-check">
+              <input class="form-check-input" type="checkbox" name="dry_run" id="dry_run">
+              <label class="form-check-label" for="dry_run">DRY-RUN</label>
+            </div>
+            <div class="col-12"><button class="btn btn-outline-primary" type="submit">Executar limpeza</button></div>
+          </form>
+          <hr>
+          <h6>race_monitor_populate_groups.py</h6>
+          <form method="post" action="{{ url_for('action_populate') }}">
+            <button class="btn btn-outline-secondary" type="submit">Popular grupos (4min/rest)</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="card mb-3">
+        <div class="card-header">Logs</div>
+        <div class="card-body">
+          <a class="btn btn-outline-dark" href="{{ url_for('logs_view') }}">Abrir logs</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-6">
+      <div class="card mb-3">
+        <div class="card-header">Grupos de atualização</div>
+        <div class="card-body">
+          <a class="btn btn-sm btn-outline-primary" href="{{ url_for('groups_view', group_name='2min') }}">2 min</a>
+          <a class="btn btn-sm btn-outline-primary" href="{{ url_for('groups_view', group_name='4min') }}">4 min</a>
+          <a class="btn btn-sm btn-outline-primary" href="{{ url_for('groups_view', group_name='rest') }}">Rest</a>
+        </div>
+      </div>
+
+      <div class="card mb-3">
+        <div class="card-header">Manutenção - app_config</div>
+        <div class="card-body">
+          <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('app_config_list') }}">Abrir manutenção</a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

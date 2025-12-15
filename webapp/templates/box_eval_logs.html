@@ -1,0 +1,12 @@
+
+{% extends 'base.html' %}
+{% block content %}
+  <h4>Logs Box Eval</h4>
+  <p><code>{{ log_path }}</code></p>
+  <form class="mb-2" method="get" action="{{ url_for('box_eval_logs') }}">
+    <label>Linhas a exibir</label>
+    <input type="number" class="form-control" name="lines" value="{{ lines }}" min="10" max="2000">
+    <button class="btn btn-primary mt-2" type="submit">Atualizar</button>
+  </form>
+  <pre class="border rounded p-3 bg-dark text-success" style="max-height: 60vh; overflow:auto">{{ log_content }}</pre>
+{% endblock %}

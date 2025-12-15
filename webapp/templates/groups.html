@@ -1,0 +1,42 @@
+
+{% extends 'base.html' %}
+{% block content %}
+  <div class="d-flex align-items-center mb-3">
+    <h4 class="me-3">Grupo: {{ group_name }}</h4>
+    <form class="d-flex" method="post" action="{{ url_for('groups_add', group_name=group_name) }}">
+      <input type="number" min="1" name="racer_id" class="form-control form-control-sm me-2" placeholder="Racer ID" required>
+      <button class="btn btn-sm btn-primary" type="submit">Adicionar</button>
+    </form>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-striped table-hover table-sm">
+      <thead>
+        <tr><th>Racer ID</th><th>last_update</th><th class="text-end">Ações</th></tr>
+      </thead>
+      <tbody>
+        {% for r in rows %}
+          <tr>
+            <td>{{ r[0] }}</td>
+            <td>{{ r[1] }}</td>
+            <td class="text-end">
+              <form class="d-inline" method="post" action="{{ url_for('groups_remove', group_name=group_name) }}">
+                <input type="hidden" name="racer_id" value="{{ r[0] }}">
+                <button class="btn btn-sm btn-outline-danger" type="submit">Remover</button>
+              </form>
+              <form class="d-inline ms-1" method="post" action="{{ url_for('groups_touch', group_name=group_name) }}">
+                <input type="hidden" name="racer_id" value="{{ r[0] }}">
+                <input type="hidden" name="action" value="now">
+                <button class="btn btn-sm btn-outline-success" type="submit">Marcar NOW()</button>
+              </form>
+              <form class="d-inline ms-1" method="post" action="{{ url_for('groups_touch', group_name=group_name) }}">
+                <input type="hidden" name="racer_id" value="{{ r[0] }}">
+                <input type="hidden" name="action" value="null">
+                <button class="btn btn-sm btn-outline-secondary" type="submit">Marcar NULL</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

@@ -1,0 +1,112 @@
+
+{% extends 'base.html' %}
+{% block content %}
+  <h3 class="mb-3">Box Eval</h3>
+
+  <form class="mb-3" method="post" action="{{ url_for('box_eval') }}">
+    <div class="card">
+      <div class="card-header">Intervalos de parada de box</div>
+      <div class="card-body">
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="box_choice" id="opt_230_250" value="opt_230_250" {{ 'checked' if choice=='opt_230_250' else '' }}>
+          <label class="form-check-label" for="opt_230_250">Usar 1 intervalo: <code>230–250</code></label>
+        </div>
+        <div class="form-check mt-2">
+          <input class="form-check-input" type="radio" name="box_choice" id="opt_two_windows" value="opt_two_windows" {{ 'checked' if choice=='opt_two_windows' else '' }}>
+          <label class="form-check-label" for="opt_two_windows">Usar 2 intervalos: <code>290–310</code> e <code>410–430</code></label>
+        </div>
+        <div class="form-check mt-2">
+          <input class="form-check-input" type="radio" name="box_choice" id="opt_custom" value="opt_custom" {{ 'checked' if choice=='opt_custom' else '' }}>
+          <label class="form-check-label" for="opt_custom">Definir intervalos manualmente</label>
+        </div>
+
+        <div id="customBox" class="row g-2 mt-2">
+          <div class="col-auto">
+            <label class="form-label small">min1</label>
+            <input type="number" class="form-control form-control-sm" name="custom_min1" value="{{ custom_min1 }}" placeholder="ex.: 230">
+          </div>
+          <div class="col-auto">
+            <label class="form-label small">max1</label>
+            <input type="number" class="form-control form-control-sm" name="custom_max1" value="{{ custom_max1 }}" placeholder="ex.: 250">
+          </div>
+          <div class="col-auto">
+            <label class="form-label small">min2 (opcional)</label>
+            <input type="number" class="form-control form-control-sm" name="custom_min2" value="{{ custom_min2 }}" placeholder="ex.: 410">
+          </div>
+          <div class="col-auto">
+            <label class="form-label small">max2 (opcional)</label>
+            <input type="number" class="form-control form-control-sm" name="custom_max2" value="{{ custom_max2 }}" placeholder="ex.: 430">
+          </div>
+        </div>
+
+        <p class="text-muted small mt-3 mb-0">Demais parâmetros são fixos (race_id=NULL; from/to=NULL; flags=1; p8=NULL; extra=NULL). É obrigatório informar <strong>min1 e max1</strong>. O segundo intervalo é opcional (preencha min2 <em>e</em> max2).</p>
+      </div>
+      <div class="card-footer text-end">
+        <button class="btn btn-primary" type="submit">Executar ranking + summary</button>
+      </div>
+    </div>
+  </form>
+
+  {% if err %}
+    <div class="alert alert-danger">{{ err }}</div>
+  {% endif %}
+
+  <div class="card mb-4">
+    <div class="card-header">Resultados – <strong>sp_kart_box_ranking</strong></div>
+    <div class="card-body">
+      {% if results.ranking and results.ranking|length > 0 %}
+        {% for cols, rows, label in results.ranking %}
+          <div class="text-muted small">Intervalo: {{ label }}</div>
+          <div class="table-responsive mt-2">
+            <table class="table table-striped table-sm">
+              <thead><tr>{% for c in cols %}<th>{{ c }}</th>{% endfor %}</tr></thead>
+              <tbody>
+                {% for row in rows %}<tr>{% for col in row %}<td>{{ col }}</td>{% endfor %}</tr>{% endfor %}
+                {% if rows|length == 0 %}<tr><td colspan="{{ cols|length or 1 }}" class="text-center text-muted">Sem dados.</td></tr>{% endif %}
+              </tbody>
+            </table>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="text-muted">Sem dados.</div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="card-header">Resultados – <strong>sp_kart_box_summary</strong></div>
+    <div class="card-body">
+      {% if results.summary and results.summary|length > 0 %}
+        {% for cols, rows, label in results.summary %}
+          <div class="text-muted small">Intervalo: {{ label }}</div>
+          <div class="table-responsive mt-2">
+            <table class="table table-striped table-sm">
+              <thead><tr>{% for c in cols %}<th>{{ c }}</th>{% endfor %}</tr></thead>
+              <tbody>
+                {% for row in rows %}<tr>{% for col in row %}<td>{{ col }}</td>{% endfor %}</tr>{% endfor %}
+                {% if rows|length == 0 %}<tr><td colspan="{{ cols|length or 1 }}" class="text-center text-muted">Sem dados.</td></tr>{% endif %}
+              </tbody>
+            </table>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="text-muted">Sem dados.</div>
+      {% endif %}
+    </div>
+  </div>
+
+  <script>
+    function syncCustomBoxState(){
+      const optCustom = document.getElementById('opt_custom');
+      const box = document.getElementById('customBox');
+      const disabled = !(optCustom && optCustom.checked);
+      if (box){
+        box.querySelectorAll('input').forEach(inp => { inp.disabled = disabled; });
+      }
+    }
+    ['opt_230_250','opt_two_windows','opt_custom'].forEach(id=>{
+      const el=document.getElementById(id); if(el){ el.addEventListener('change', syncCustomBoxState); }
+    });
+    window.addEventListener('DOMContentLoaded', syncCustomBoxState);
+  </script>
+{% endblock %}
